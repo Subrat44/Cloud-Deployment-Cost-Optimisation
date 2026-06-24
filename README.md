@@ -10,6 +10,10 @@ Below is the directory structure of the project representing our dual-engine arc
 ```text
 ├── .env.example              # Template for environment configuration
 ├── .gitignore                # Git exclusions
+├── Dockerfile                # Production multi-stage Node/Python container configuration
+├── .github
+│   └── workflows
+│       └── ci-cd.yml         # GitHub Actions CI/CD Pipeline workflow script
 ├── providers_data.py         # Python representation of Cloud Providers & VM catalogs
 ├── server.py                 # Standard Library Python Server (port 3000)
 ├── server.ts                 # Node.js supervisor (bridges to Python server.py)
