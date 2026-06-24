@@ -1,0 +1,6 @@
+{
+  "name": "Cloud deployment cost comparison",
+  "description": "An interactive workspace demonstrating cloud deployment architecture, Terraform code, CI/CD pipelines, and cost calculations for AWS, Azure, and GCP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
