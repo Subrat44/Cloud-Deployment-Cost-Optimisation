@@ -5,4 +5,16 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-rosegold-50: #FAF5F4;
+  --color-rosegold-100: #F6ECEB;
+  --color-rosegold-200: #ECD2CF;
+  --color-rosegold-300: #DEB3AE;
+  --color-rosegold-400: #CC8E87;
+  --color-rosegold-500: #B76E79;
+  --color-rosegold-600: #9E5661;
+  --color-rosegold-700: #85444E;
+  --color-rosegold-800: #6B353E;
+  --color-rosegold-900: #4D2128;
 }
+

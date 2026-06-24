@@ -67,6 +67,18 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
     
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+    // Async handshake with Python backend API
+    try {
+      const response = await fetch(`/api/pipeline/simulate?provider=${provider}`);
+      const serverLogs = await response.json();
+      addLog(`[Python API Status] Connected to Python 3.10 pipeline socket...`, 'info');
+      if (serverLogs && serverLogs.length > 0) {
+        addLog(`[Python API] Handshake: ${serverLogs[0].text}`, 'success');
+      }
+    } catch (e) {
+      console.warn('Python backend connection fallback active', e);
+    }
+
     // STEP 1: TRIGGER
     setCurrentStepIndex(0);
     addLog(`$ git push origin main`, 'command');
@@ -159,13 +171,13 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6" id="simulator-section">
       {/* Visual Stepper */}
-      <div className="lg:col-span-2 bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+      <div className="lg:col-span-2 bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm flex flex-col justify-between">
         <div>
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-white/5">
-            <h3 className="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-rosegold-100">
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
               Workflow Steps
             </h3>
-            <span className="text-[10px] bg-white/5 text-gray-300 font-mono px-2 py-0.5 rounded border border-white/10">
+            <span className="text-[10px] bg-rosegold-50 text-rosegold-700 font-mono font-bold px-2 py-0.5 rounded border border-rosegold-200">
               OIDC Secure Mode
             </span>
           </div>
@@ -178,16 +190,16 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
                   <div className="flex flex-col items-center">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-all duration-200 border ${
                       status === 'completed'
-                        ? 'bg-green-400/10 border-green-400 text-green-400 shadow-[0_0_8px_rgba(74,222,128,0.3)]'
+                        ? 'bg-emerald-500/10 border-emerald-500 text-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
                         : status === 'running'
-                        ? 'bg-blue-500/10 border-blue-500 text-blue-400 animate-pulse'
-                        : 'bg-black/40 border-white/5 text-gray-500'
+                        ? 'bg-rosegold-500/15 border-rosegold-500 text-rosegold-600 animate-pulse'
+                        : 'bg-rosegold-50/50 border-rosegold-100 text-slate-400'
                     }`}>
                       {status === 'completed' ? '✓' : idx + 1}
                     </div>
                     {idx < steps.length - 1 && (
                       <div className={`w-0.5 h-6 my-1 ${
-                        currentStepIndex > idx ? 'bg-green-500/50' : 'bg-white/5'
+                        currentStepIndex > idx ? 'bg-emerald-500/40' : 'bg-rosegold-100'
                       }`} />
                     )}
                   </div>
@@ -196,18 +208,18 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
                     <div className="flex items-center gap-1.5">
                       <span className={`text-xs font-semibold ${
                         status === 'completed'
-                          ? 'text-green-400'
+                          ? 'text-emerald-600 font-bold'
                           : status === 'running'
-                          ? 'text-blue-400 font-bold'
-                          : 'text-gray-400'
+                          ? 'text-rosegold-600 font-extrabold'
+                          : 'text-slate-500 font-medium'
                       }`}>
                         {step.name}
                       </span>
                       {status === 'running' && (
-                        <Loader2 className="w-3 h-3 text-blue-400 animate-spin" />
+                        <Loader2 className="w-3 h-3 text-rosegold-600 animate-spin" />
                       )}
                     </div>
-                    <span className="text-[10px] text-gray-500 block font-mono">
+                    <span className="text-[10px] text-slate-400 block font-mono font-bold uppercase">
                       {status === 'completed' ? 'PASS' : status === 'running' ? 'EXECUTING...' : 'QUEUED'}
                     </span>
                   </div>
@@ -217,27 +229,27 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-3">
+        <div className="mt-6 pt-4 border-t border-rosegold-100 flex flex-col gap-3">
           {/* Inputs */}
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1">Target Host IP</label>
+              <label className="text-[10px] text-slate-500 font-mono font-bold uppercase block mb-1">Target Host IP</label>
               <input
                 type="text"
                 value={vmIp}
                 onChange={(e) => setVmIp(e.target.value)}
                 disabled={isRunning}
-                className="w-full bg-black/40 border border-white/10 rounded px-2.5 py-1.5 font-mono text-gray-300 focus:outline-none focus:border-blue-500 disabled:opacity-60"
+                className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded px-2.5 py-1.5 font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 disabled:opacity-60"
               />
             </div>
             <div>
-              <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1">Repository Name</label>
+              <label className="text-[10px] text-slate-500 font-mono font-bold uppercase block mb-1">Repository Name</label>
               <input
                 type="text"
                 value={repoName}
                 onChange={(e) => setRepoName(e.target.value)}
                 disabled={isRunning}
-                className="w-full bg-black/40 border border-white/10 rounded px-2.5 py-1.5 font-mono text-gray-300 focus:outline-none focus:border-blue-500 disabled:opacity-60"
+                className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded px-2.5 py-1.5 font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 disabled:opacity-60"
               />
             </div>
           </div>
@@ -246,7 +258,7 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
             <button
               onClick={runPipeline}
               disabled={isRunning}
-              className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-white/5 disabled:text-gray-500 text-white font-bold text-xs py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98"
+              className="flex-1 bg-rosegold-500 hover:bg-rosegold-600 disabled:bg-rosegold-100 disabled:text-slate-400 text-white font-bold text-xs py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-sm"
             >
               {isRunning ? (
                 <>
@@ -263,7 +275,7 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
             <button
               onClick={handleReset}
               disabled={isRunning}
-              className="bg-white/5 hover:bg-white/10 text-gray-300 p-2 rounded-lg border border-white/10 transition-all cursor-pointer active:scale-98"
+              className="bg-white hover:bg-rosegold-50 text-slate-600 p-2 rounded-lg border border-rosegold-200 transition-all cursor-pointer active:scale-98 shadow-sm"
               title="Reset Simulator"
             >
               <RotateCcw className="w-4 h-4" />
@@ -273,34 +285,34 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
       </div>
 
       {/* Terminal Runner Logs */}
-      <div className="lg:col-span-3 bg-black/40 border border-white/10 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between">
-        <div className="bg-[#0D0F14] border-b border-white/5 px-4 py-2.5 flex justify-between items-center">
+      <div className="lg:col-span-3 bg-white border border-rosegold-200/60 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between">
+        <div className="bg-rosegold-50/20 border-b border-rosegold-100 px-4 py-2.5 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-gray-300 font-mono font-bold">runner@github-actions-vm:~</span>
+            <Terminal className="w-4 h-4 text-rosegold-600" />
+            <span className="text-xs text-slate-800 font-mono font-bold">runner@github-actions-vm:~</span>
           </div>
           <div className="flex gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-white/10"></span>
-            <span className="w-2 h-2 rounded-full bg-white/10"></span>
-            <span className="w-2 h-2 rounded-full bg-white/10"></span>
+            <span className="w-2 h-2 rounded-full bg-rosegold-200"></span>
+            <span className="w-2 h-2 rounded-full bg-rosegold-200"></span>
+            <span className="w-2 h-2 rounded-full bg-rosegold-200"></span>
           </div>
         </div>
 
-        <div className="flex-1 p-5 font-mono text-[11px] leading-relaxed overflow-y-auto max-h-[400px] min-h-[300px] bg-black/20 text-gray-300">
+        <div className="flex-1 p-5 font-mono text-[11px] leading-relaxed overflow-y-auto max-h-[400px] min-h-[300px] bg-[#1E1B1C] text-rosegold-100">
           {logs.map((log, idx) => (
             <div key={idx} className="mb-1.5 flex items-start gap-2">
-              <span className="text-gray-600 select-none text-[9px] pt-0.5">{log.timestamp}</span>
-              {log.type === 'command' && <span className="text-gray-500 font-bold select-none">&gt;</span>}
+              <span className="text-rosegold-400/40 select-none text-[9px] pt-0.5 font-bold">{log.timestamp}</span>
+              {log.type === 'command' && <span className="text-rosegold-300/60 font-bold select-none">&gt;</span>}
               <span className={`break-all ${
                 log.type === 'success'
-                  ? 'text-green-400 font-medium'
+                  ? 'text-emerald-400 font-semibold'
                   : log.type === 'error'
                   ? 'text-red-400 font-bold'
                   : log.type === 'command'
-                  ? 'text-blue-400 font-semibold'
+                  ? 'text-sky-300 font-semibold'
                   : log.type === 'warning'
-                  ? 'text-yellow-400'
-                  : 'text-gray-300'
+                  ? 'text-amber-400 font-semibold'
+                  : 'text-rosegold-100'
               }`}>
                 {log.text}
               </span>
@@ -309,17 +321,17 @@ export default function PipelineSimulator({ provider }: PipelineSimulatorProps) 
           <div ref={terminalEndRef} />
         </div>
 
-        <div className="bg-[#0D0F14] p-3.5 border-t border-white/5 text-[10px] text-gray-400 flex justify-between items-center">
+        <div className="bg-rosegold-50/10 p-3.5 border-t border-rosegold-100 text-[10px] text-slate-500 flex justify-between items-center">
           <div className="flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-amber-400 animate-ping' : 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]'}`}></span>
-            <span>Status: {isRunning ? 'Active Deployment' : currentStepIndex === 7 ? 'Finished (Pass)' : 'Idle'}</span>
+            <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-amber-500 animate-ping' : 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]'}`}></span>
+            <span className="font-medium text-slate-600">Status: {isRunning ? 'Active Deployment' : currentStepIndex === 7 ? 'Finished (Pass)' : 'Idle'}</span>
           </div>
           {currentStepIndex === 7 && (
             <a 
               href={`http://${vmIp}`} 
               target="_blank" 
               rel="noreferrer"
-              className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 font-sans font-semibold text-xs transition"
+              className="text-rosegold-600 hover:text-rosegold-700 hover:underline flex items-center gap-1 font-sans font-bold text-xs transition"
             >
               <span>Visit VM Site</span>
               <ArrowUpRight className="w-3.5 h-3.5" />

@@ -14,8 +14,8 @@ export default function ProviderSelector({ selectedProvider, onChangeProvider }:
       name: 'Amazon Web Services',
       short: 'AWS',
       accentColor: 'border-amber-500/80 hover:border-amber-500',
-      activeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400 shadow-sm',
-      inactiveBg: 'bg-[#0D0F14] border-white/5 text-gray-400 hover:text-white hover:bg-white/5 hover:border-white/10',
+      activeBg: 'bg-amber-500/5 border-amber-500/60 text-amber-800 shadow-sm shadow-amber-500/5',
+      inactiveBg: 'bg-white border-rosegold-100 text-gray-500 hover:text-rosegold-800 hover:bg-rosegold-50/30 hover:border-rosegold-200',
       logoChar: 'A',
       logoBg: 'bg-amber-500'
     },
@@ -24,8 +24,8 @@ export default function ProviderSelector({ selectedProvider, onChangeProvider }:
       name: 'Google Cloud Platform',
       short: 'GCP',
       accentColor: 'border-blue-500/80 hover:border-blue-500',
-      activeBg: 'bg-blue-500/10 border-blue-500/40 text-blue-400 shadow-sm',
-      inactiveBg: 'bg-[#0D0F14] border-white/5 text-gray-400 hover:text-white hover:bg-white/5 hover:border-white/10',
+      activeBg: 'bg-blue-500/5 border-blue-500/60 text-blue-800 shadow-sm shadow-blue-500/5',
+      inactiveBg: 'bg-white border-rosegold-100 text-gray-500 hover:text-rosegold-800 hover:bg-rosegold-50/30 hover:border-rosegold-200',
       logoChar: 'G',
       logoBg: 'bg-blue-500'
     },
@@ -34,8 +34,8 @@ export default function ProviderSelector({ selectedProvider, onChangeProvider }:
       name: 'Microsoft Azure',
       short: 'Azure',
       accentColor: 'border-sky-500/80 hover:border-sky-500',
-      activeBg: 'bg-sky-500/10 border-sky-500/40 text-sky-400 shadow-sm',
-      inactiveBg: 'bg-[#0D0F14] border-white/5 text-gray-400 hover:text-white hover:bg-white/5 hover:border-white/10',
+      activeBg: 'bg-sky-500/5 border-sky-500/60 text-sky-800 shadow-sm shadow-sky-500/5',
+      inactiveBg: 'bg-white border-rosegold-100 text-gray-500 hover:text-rosegold-800 hover:bg-rosegold-50/30 hover:border-rosegold-200',
       logoChar: 'M',
       logoBg: 'bg-sky-500'
     }
@@ -68,8 +68,8 @@ export default function ProviderSelector({ selectedProvider, onChangeProvider }:
             </div>
 
             {isActive && (
-              <span className="shrink-0 p-1 rounded-full bg-slate-950 border border-current">
-                <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
+              <span className="shrink-0 p-1 rounded-full bg-white border border-current">
+                <Check className="w-3 h-3 text-emerald-500 stroke-[3]" />
               </span>
             )}
             

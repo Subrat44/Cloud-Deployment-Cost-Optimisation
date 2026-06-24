@@ -67,56 +67,56 @@ export default function ArchitectureDiagram({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="architecture-section">
       {/* SVG Diagram Canvas */}
-      <div className="lg:col-span-2 bg-[#0D0F14] border border-white/10 rounded-xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl">
+      <div className="lg:col-span-2 bg-white border border-rosegold-200/60 rounded-xl p-6 relative overflow-hidden flex flex-col justify-between shadow-sm">
         <div className="flex justify-between items-center mb-4 z-10">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.6)]"></span>
-            <span className="text-xs text-white font-medium font-sans uppercase tracking-widest">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+            <span className="text-xs text-slate-800 font-bold font-sans uppercase tracking-widest">
               {provider.toUpperCase()} Interactive IaC Topology
             </span>
           </div>
-          <p className="text-xs text-gray-500 font-sans">
+          <p className="text-xs text-slate-500 font-sans font-medium">
             Hover or click components to inspect security policies
           </p>
         </div>
-
+ 
         {/* Interactive SVG Diagram */}
-        <div className="w-full flex justify-center items-center py-4 bg-black/40 rounded-lg border border-white/5">
+        <div className="w-full flex justify-center items-center py-4 bg-rosegold-50/10 rounded-lg border border-rosegold-100">
           <svg viewBox="0 0 800 480" className="w-full max-w-2xl h-auto select-none" xmlns="http://www.w3.org/2000/svg">
             {/* DEF - Patterns, gradients, arrows */}
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 10 5 L 0 9 z" fill="#4b5563" />
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#85444E" />
               </marker>
               <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 10 5 L 0 9 z" fill="#60a5fa" />
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6" />
               </marker>
               <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 10 5 L 0 9 z" fill="#4ade80" />
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
               </marker>
-              <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#2563eb" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.05" />
+              <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#B76E79" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#F5E1DE" stopOpacity="0.02" />
               </linearGradient>
             </defs>
-
+ 
             {/* FLOW LINES & CONNECTORS */}
             {/* GitHub -> GHA Actions Runner */}
-            <path d="M 120 120 L 220 120" stroke="#374151" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arrow)" />
+            <path d="M 120 120 L 220 120" stroke="#CC8E87" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arrow)" />
             
             {/* GHA Runner -> OIDC auth exchange */}
-            <path d="M 280 160 L 280 250" stroke="#60a5fa" strokeWidth="2" strokeDasharray="3 3" markerEnd="url(#arrow-blue)" />
-            <path d="M 280 250 L 510 375" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#arrow-blue)" />
+            <path d="M 280 160 L 280 250" stroke="#3b82f6" strokeWidth="2" strokeDasharray="3 3" markerEnd="url(#arrow-blue)" />
+            <path d="M 280 250 L 510 375" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#arrow-blue)" />
             
             {/* Internet Request -> IGW / Static IP */}
-            <path d="M 100 375 L 340 375" stroke="#4ade80" strokeWidth="2" strokeDasharray="2 2" markerEnd="url(#arrow-green)" />
+            <path d="M 100 375 L 340 375" stroke="#10b981" strokeWidth="2" strokeDasharray="2 2" markerEnd="url(#arrow-green)" />
             
             {/* IGW -> SG / Firewall */}
-            <path d="M 380 375 L 470 375" stroke="#4ade80" strokeWidth="2" markerEnd="url(#arrow-green)" />
+            <path d="M 380 375 L 470 375" stroke="#10b981" strokeWidth="2" markerEnd="url(#arrow-green)" />
             
             {/* SG / Firewall -> VM Subnet Inbound */}
-            <path d="M 530 375 L 590 375" stroke="#4ade80" strokeWidth="2.5" markerEnd="url(#arrow-green)" />
-
+            <path d="M 530 375 L 590 375" stroke="#10b981" strokeWidth="2.5" markerEnd="url(#arrow-green)" />
+ 
             {/* 1. DEVELOPER GIT PUSH */}
             <g 
               className="cursor-pointer transition-all duration-200" 
@@ -125,15 +125,15 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="20" y="80" width="100" height="80" rx="12" 
-                fill={activeId === 'github' ? '#0F1117' : '#0A0B0E'} 
-                stroke={activeId === 'github' ? '#60a5fa' : '#1f2937'} 
+                fill={activeId === 'github' ? '#FAF1F0' : '#FFFFFF'} 
+                stroke={activeId === 'github' ? '#B76E79' : '#ECD2CF'} 
                 strokeWidth={activeId === 'github' ? '2' : '1'} 
               />
-              <circle cx="70" cy="115" r="16" fill="#1e1b4b" />
-              <path d="M 70 105 L 70 125 M 65 110 L 70 105 L 75 110" stroke="#818cf8" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-              <text x="70" y="152" fill="#9ca3af" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Git Repository</text>
+              <circle cx="70" cy="115" r="16" fill="#F5E1DE" />
+              <path d="M 70 105 L 70 125 M 65 110 L 70 105 L 75 110" stroke="#B76E79" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <text x="70" y="152" fill="#6B353E" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Git Repository</text>
             </g>
-
+ 
             {/* 2. GITHUB ACTIONS CI/CD RUNNER */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -142,15 +142,15 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="220" y="80" width="120" height="80" rx="12" 
-                fill={activeId === 'gha' ? '#0F1117' : '#0A0B0E'} 
-                stroke={activeId === 'gha' ? '#60a5fa' : '#1f2937'} 
+                fill={activeId === 'gha' ? '#F0F9FF' : '#FFFFFF'} 
+                stroke={activeId === 'gha' ? '#00acdf' : '#ECD2CF'} 
                 strokeWidth={activeId === 'gha' ? '2' : '1'} 
               />
-              <circle cx="280" cy="115" r="16" fill="#062f4f" />
+              <circle cx="280" cy="115" r="16" fill="#E0F2FE" />
               <path d="M 273 111 C 273 111 278 108 281 112 C 284 116 287 112 287 112 M 274 120 L 286 120" stroke="#00acdf" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-              <text x="280" y="152" fill="#9ca3af" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">CI/CD Pipeline</text>
+              <text x="280" y="152" fill="#0369a1" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">CI/CD Pipeline</text>
             </g>
-
+ 
             {/* 3. PUBLIC ENDPOINT / PUBLIC IP */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -159,21 +159,21 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <circle cx="360" cy="375" r="24" 
-                fill={activeId === 'igw' ? '#0F1117' : '#0A0B0E'} 
-                stroke={activeId === 'igw' ? '#60a5fa' : '#1f2937'} 
+                fill={activeId === 'igw' ? '#ECFDF5' : '#FFFFFF'} 
+                stroke={activeId === 'igw' ? '#10b981' : '#ECD2CF'} 
                 strokeWidth={activeId === 'igw' ? '2' : '1'} 
               />
-              <path d="M 353 371 A 10 10 0 0 1 367 371 A 10 10 0 0 1 367 379 A 10 10 0 0 1 353 379 Z M 360 365 L 360 385 M 350 375 L 370 375" stroke="#4ade80" strokeWidth="2" fill="none" />
-              <text x="360" y="415" fill="#9ca3af" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Internet Gateway</text>
+              <path d="M 353 371 A 10 10 0 0 1 367 371 A 10 10 0 0 1 367 379 A 10 10 0 0 1 353 379 Z M 360 365 L 360 385 M 350 375 L 370 375" stroke="#10b981" strokeWidth="2" fill="none" />
+              <text x="360" y="415" fill="#047857" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Internet Gateway</text>
             </g>
             
             {/* EXTERNAL INGRESS LABEL */}
             <g>
-              <rect x="20" y="355" width="80" height="35" rx="6" fill="#042f2e" stroke="#0d9488" strokeWidth="1" />
-              <text x="60" y="371" fill="#2dd4bf" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Client HTTP</text>
-              <text x="60" y="382" fill="#0d9488" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Port 80/443</text>
+              <rect x="20" y="355" width="80" height="35" rx="6" fill="#ECFDF5" stroke="#10b981" strokeWidth="1" />
+              <text x="60" y="371" fill="#065f46" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Client HTTP</text>
+              <text x="60" y="382" fill="#047857" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Port 80/443</text>
             </g>
-
+ 
             {/* 4. VPC LOGICAL BOUNDARY BOX */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -182,20 +182,20 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="420" y="220" width="350" height="230" rx="16" 
-                fill="url(#blueGrad)" 
-                stroke={activeId === 'vpc' ? '#60a5fa' : '#1e40af'} 
+                fill="url(#roseGrad)" 
+                stroke={activeId === 'vpc' ? '#B76E79' : '#CC8E87'} 
                 strokeWidth={activeId === 'vpc' ? '2' : '1'} 
                 strokeDasharray={activeId === 'vpc' ? 'none' : '5 5'} 
               />
-              <text x="435" y="242" fill="#60a5fa" fontSize="11" fontWeight="bold" fontFamily="monospace">
+              <text x="435" y="242" fill="#B76E79" fontSize="11" fontWeight="bold" fontFamily="monospace">
                 {provider === 'aws' ? 'AWS VPC' : provider === 'gcp' ? 'GCP VPC Network' : 'Azure VNet'} (10.0.0.0/16)
               </text>
             </g>
-
+ 
             {/* PUBLIC SUBNET BOUNDARY BOX */}
-            <rect x="440" y="260" width="310" height="170" rx="12" fill="#0A0B0E" stroke="#1f2937" strokeWidth="1.5" />
-            <text x="450" y="278" fill="#6b7280" fontSize="9" fontWeight="bold" fontFamily="monospace">Public Subnet (10.0.1.0/24)</text>
-
+            <rect x="440" y="260" width="310" height="170" rx="12" fill="#FFFFFF" stroke="#ECD2CF" strokeWidth="1.5" />
+            <text x="450" y="278" fill="#85444E" fontSize="9" fontWeight="bold" fontFamily="monospace">Public Subnet (10.0.1.0/24)</text>
+ 
             {/* 5. SECURITY GROUP / FIREWALL LIMITS */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -204,14 +204,14 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="470" y="320" width="60" height="90" rx="10" 
-                fill={activeId === 'sg' ? '#1e1b4b' : '#0F1117'} 
-                stroke={activeId === 'sg' ? '#60a5fa' : '#312e81'} 
+                fill={activeId === 'sg' ? '#FAF1F0' : '#FFFFFF'} 
+                stroke={activeId === 'sg' ? '#B76E79' : '#ECD2CF'} 
                 strokeWidth={activeId === 'sg' ? '2' : '1'} 
               />
-              <path d="M 500 345 L 488 351 L 488 362 C 488 371 494 378 500 381 C 506 378 512 371 512 362 L 512 351 Z" fill="#818cf8" />
-              <text x="500" y="398" fill="#c7d2fe" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Firewall</text>
+              <path d="M 500 345 L 488 351 L 488 362 C 488 371 494 378 500 381 C 506 378 512 371 512 362 L 512 351 Z" fill="#B76E79" />
+              <text x="500" y="398" fill="#85444E" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Firewall</text>
             </g>
-
+ 
             {/* 6. VIRTUAL MACHINE HOST */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -220,21 +220,21 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="590" y="290" width="130" height="120" rx="12" 
-                fill={activeId === 'vm' ? '#0F1117' : '#0A0B0E'} 
-                stroke={activeId === 'vm' ? '#60a5fa' : '#1f2937'} 
+                fill={activeId === 'vm' ? '#FCFBF9' : '#FFFFFF'} 
+                stroke={activeId === 'vm' ? '#B76E79' : '#ECD2CF'} 
                 strokeWidth={activeId === 'vm' ? '2' : '1'} 
               />
-              <rect x="600" y="300" width="110" height="50" rx="6" fill="#0A0B0E" stroke="#1f2937" />
-              <text x="655" y="318" fill="#4ade80" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Node.js Server</text>
-              <text x="655" y="335" fill="#4b5563" fontSize="8" textAnchor="middle" fontFamily="monospace">Port 80 (PM2)</text>
+              <rect x="600" y="300" width="110" height="50" rx="6" fill="#FDF8F7" stroke="#ECD2CF" />
+              <text x="655" y="318" fill="#10b981" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Node.js Server</text>
+              <text x="655" y="335" fill="#85444E" fontSize="8" textAnchor="middle" fontFamily="monospace">Port 80 (PM2)</text>
               
               {/* Little server drives visual representation */}
-              <circle cx="615" cy="385" r="4" fill="#3b82f6" />
-              <circle cx="630" cy="385" r="4" fill="#3b82f6" />
-              <circle cx="645" cy="385" r="4" fill="#3b82f6" />
-              <text x="710" y="390" fill="#9ca3af" fontSize="11" fontWeight="bold" textAnchor="end" fontFamily="monospace">VM Instance</text>
+              <circle cx="615" cy="385" r="4" fill="#B76E79" />
+              <circle cx="630" cy="385" r="4" fill="#B76E79" />
+              <circle cx="645" cy="385" r="4" fill="#B76E79" />
+              <text x="710" y="390" fill="#6B353E" fontSize="11" fontWeight="bold" textAnchor="end" fontFamily="monospace">VM Instance</text>
             </g>
-
+ 
             {/* 7. IAM IDENTITY PROFILE */}
             <g 
               className="cursor-pointer transition-all duration-200"
@@ -243,81 +243,81 @@ export default function ArchitectureDiagram({
               onMouseLeave={() => setHoveredId(null)}
             >
               <rect x="510" y="110" width="160" height="40" rx="8" 
-                fill={activeId === 'iam' ? '#0A0B0E' : '#022c22'} 
-                stroke={activeId === 'iam' ? '#60a5fa' : '#065f46'} 
+                fill={activeId === 'iam' ? '#FAF1F0' : '#ECFDF5'} 
+                stroke={activeId === 'iam' ? '#B76E79' : '#059669'} 
                 strokeWidth={activeId === 'iam' ? '2' : '1'} 
               />
-              <path d="M 525 130 C 525 124 535 124 535 130 M 530 120 C 533 120 533 125 530 125" stroke="#4ade80" strokeWidth="1.5" fill="none" />
-              <text x="542" y="134" fill="#4ade80" fontSize="9" fontWeight="bold" fontFamily="monospace">
+              <path d="M 525 130 C 525 124 535 124 535 130 M 530 120 C 533 120 533 125 530 125" stroke="#10b981" strokeWidth="1.5" fill="none" />
+              <text x="542" y="134" fill="#047857" fontSize="9" fontWeight="bold" fontFamily="monospace">
                 {provider === 'aws' ? 'IAM Instance Role' : provider === 'gcp' ? 'IAM Service Acct' : 'Managed Identity'}
               </text>
               {/* Dynamic connector line from IAM directly down to VM */}
-              <path d="M 590 150 L 590 280" stroke="#047857" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#arrow)" />
+              <path d="M 590 150 L 590 280" stroke="#059669" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#arrow)" />
             </g>
           </svg>
         </div>
-
+ 
         {/* Selected Component Brief */}
-        <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center text-xs">
-          <div className="flex items-center gap-2 text-gray-400">
-            <ShieldCheck className="w-4 h-4 text-green-400" />
+        <div className="mt-4 pt-4 border-t border-rosegold-100 flex justify-between items-center text-xs">
+          <div className="flex items-center gap-2 text-slate-500 font-medium">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <span>Interactive Guide: Click any node to load code variables & rules.</span>
           </div>
-          <div className="text-gray-500 font-mono text-[10px]">
+          <div className="text-slate-400 font-mono text-[10px] font-semibold">
             Topology version: 1.0.2-Terraform
           </div>
         </div>
       </div>
-
+ 
       {/* Inspector Details Sidebar */}
-      <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+      <div className="bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="p-1 rounded bg-blue-900/40 text-blue-400 border border-blue-800">
+            <span className="p-1 rounded bg-rosegold-50 text-rosegold-600 border border-rosegold-200">
               <Terminal className="w-4 h-4" />
             </span>
-            <h3 className="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
               Infrastructure Inspector
             </h3>
           </div>
-
-          <div className="bg-black/40 p-4 rounded-lg border border-white/5 mb-4 min-h-[160px] flex flex-col justify-between">
+ 
+          <div className="bg-rosegold-50/20 p-4 rounded-lg border border-rosegold-100 mb-4 min-h-[160px] flex flex-col justify-between">
             <div>
-              <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono mb-1">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest font-mono mb-1">
                 {activeComponent.title}
               </h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed font-sans font-medium">
                 {activeComponent.desc}
               </p>
             </div>
             
-            <div className="mt-3 pt-3 border-t border-white/5">
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider block font-mono">
+            <div className="mt-3 pt-3 border-t border-rosegold-100">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-mono font-bold">
                 Terraform Resource Type
               </span>
-              <span className="text-xs font-semibold text-blue-400 font-mono break-all">
+              <span className="text-xs font-semibold text-rosegold-600 font-mono break-all">
                 {activeComponent.tf}
               </span>
             </div>
           </div>
-
-          <div className="bg-green-400/5 border border-green-400/10 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-2 text-green-400">
+ 
+          <div className="bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-lg">
+            <div className="flex items-center gap-2 mb-2 text-emerald-600">
               <ShieldCheck className="w-4 h-4 shrink-0" />
               <h4 className="text-xs font-bold font-mono uppercase tracking-wider">
                 Security Policy Check
               </h4>
             </div>
-            <p className="text-xs text-green-500/90 leading-relaxed">
+            <p className="text-xs text-emerald-800 leading-relaxed font-medium">
               {activeComponent.security}
             </p>
           </div>
         </div>
-
-        <div className="mt-4 pt-4 border-t border-white/5 text-xs text-gray-400">
-          <div className="flex justify-between items-center bg-black/40 p-2.5 rounded border border-white/5">
-            <span className="font-mono text-[10px] uppercase">Default Status</span>
-            <span className="text-green-400 font-bold font-mono">SECURED</span>
+ 
+        <div className="mt-4 pt-4 border-t border-rosegold-100 text-xs text-gray-500">
+          <div className="flex justify-between items-center bg-rosegold-50/30 p-2.5 rounded border border-rosegold-100">
+            <span className="font-mono text-[10px] uppercase font-bold text-slate-400">Default Status</span>
+            <span className="text-emerald-600 font-bold font-mono">SECURED</span>
           </div>
         </div>
       </div>

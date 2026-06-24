@@ -208,107 +208,107 @@ export default function CompareProviders() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in" id="compare-providers-section">
+    <div className="space-y-8 animate-fade-in animate-duration-300" id="compare-providers-section">
       {/* Feature Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-lg shadow-sm">
+          <div className="p-2 bg-rosegold-50 border border-rosegold-200 text-rosegold-600 rounded-lg shadow-sm">
             <GitCompare className="w-5 h-5 animate-pulse" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider font-mono">
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider font-mono">
               Cloud Provider Comparative Workspace
             </h3>
-            <p className="text-xs text-gray-400 mt-1 font-sans">
+            <p className="text-xs text-slate-500 mt-1 font-sans font-medium">
               Compare budget forecasts, architectural definitions, and actual Terraform configurations side-by-side.
             </p>
           </div>
         </div>
-        <div className="text-[10px] bg-blue-400/5 text-blue-400 border border-blue-400/20 font-mono px-3 py-1 rounded-full uppercase tracking-wider">
+        <div className="text-[10px] bg-rosegold-500/5 text-rosegold-600 border border-rosegold-200 font-mono px-3 py-1 rounded-full font-bold uppercase tracking-wider">
           Multi-Cloud Assessment Tool
         </div>
       </div>
 
       {/* Side-by-Side Provider Configuration Selector Card */}
-      <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-6 shadow-xl space-y-6">
+      <div className="bg-white border border-rosegold-200/60 rounded-xl p-6 shadow-sm space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
           {/* Vertical Separator for wide screens */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/5 -ml-px"></div>
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-rosegold-100 -ml-px"></div>
 
           {/* Left Column (Provider A Selection) */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <span className="w-5 h-5 rounded-full bg-blue-600/20 text-blue-400 text-[10px] font-mono flex items-center justify-center font-bold">A</span>
-              <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono">Select Provider A</h4>
+            <div className="flex items-center gap-2 pb-2 border-b border-rosegold-100">
+              <span className="w-5 h-5 rounded-full bg-rosegold-100 text-rosegold-800 text-[10px] font-mono flex items-center justify-center font-bold">A</span>
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest font-mono">Select Provider A</h4>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1.5">Cloud Platform</label>
+                <label className="text-[10px] text-slate-500 font-mono uppercase block mb-1.5 font-bold">Cloud Platform</label>
                 <select
                   value={providerA}
                   onChange={(e) => setProviderA(e.target.value as CloudProvider)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 cursor-pointer"
                 >
-                  <option value="aws">Amazon Web Services (AWS)</option>
-                  <option value="gcp">Google Cloud Platform (GCP)</option>
-                  <option value="azure">Microsoft Azure</option>
+                  <option value="aws" className="text-slate-800">Amazon Web Services (AWS)</option>
+                  <option value="gcp" className="text-slate-800">Google Cloud Platform (GCP)</option>
+                  <option value="azure" className="text-slate-800">Microsoft Azure</option>
                 </select>
               </div>
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1.5">VM Instance size</label>
+                <label className="text-[10px] text-slate-500 font-mono uppercase block mb-1.5 font-bold">VM Instance size</label>
                 <select
                   value={selectedInstanceA}
                   onChange={(e) => setSelectedInstanceA(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 cursor-pointer"
                 >
                   {dataA.instances.map((inst) => (
-                    <option key={inst.type} value={inst.type}>
+                    <option key={inst.type} value={inst.type} className="text-slate-800">
                       {inst.type} ({inst.vcpu}v, {inst.ram}R) - ${inst.monthlyCost.toFixed(2)}/mo
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <p className="text-[11px] text-gray-400 bg-black/20 p-3 rounded-lg border border-white/5 leading-relaxed font-sans min-h-[50px]">
+            <p className="text-[11px] text-slate-600 bg-rosegold-50/25 p-3 rounded-lg border border-rosegold-100 leading-relaxed font-sans font-medium min-h-[50px]">
               {currentInstanceA?.description || 'Virtual machine instance configuration details.'}
             </p>
           </div>
 
           {/* Right Column (Provider B Selection) */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <span className="w-5 h-5 rounded-full bg-emerald-600/20 text-emerald-400 text-[10px] font-mono flex items-center justify-center font-bold">B</span>
-              <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono">Select Provider B</h4>
+            <div className="flex items-center gap-2 pb-2 border-b border-rosegold-100">
+              <span className="w-5 h-5 rounded-full bg-rosegold-100 text-rosegold-800 text-[10px] font-mono flex items-center justify-center font-bold">B</span>
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest font-mono">Select Provider B</h4>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1.5">Cloud Platform</label>
+                <label className="text-[10px] text-slate-500 font-mono uppercase block mb-1.5 font-bold">Cloud Platform</label>
                 <select
                   value={providerB}
                   onChange={(e) => setProviderB(e.target.value as CloudProvider)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 cursor-pointer"
                 >
-                  <option value="aws">Amazon Web Services (AWS)</option>
-                  <option value="gcp">Google Cloud Platform (GCP)</option>
-                  <option value="azure">Microsoft Azure</option>
+                  <option value="aws" className="text-slate-800">Amazon Web Services (AWS)</option>
+                  <option value="gcp" className="text-slate-800">Google Cloud Platform (GCP)</option>
+                  <option value="azure" className="text-slate-800">Microsoft Azure</option>
                 </select>
               </div>
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1.5">VM Instance size</label>
+                <label className="text-[10px] text-slate-500 font-mono uppercase block mb-1.5 font-bold">VM Instance size</label>
                 <select
                   value={selectedInstanceB}
                   onChange={(e) => setSelectedInstanceB(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full bg-rosegold-50/30 border border-rosegold-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 font-semibold focus:outline-none focus:border-rosegold-400 cursor-pointer"
                 >
                   {dataB.instances.map((inst) => (
-                    <option key={inst.type} value={inst.type}>
+                    <option key={inst.type} value={inst.type} className="text-slate-800">
                       {inst.type} ({inst.vcpu}v, {inst.ram}R) - ${inst.monthlyCost.toFixed(2)}/mo
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <p className="text-[11px] text-gray-400 bg-black/20 p-3 rounded-lg border border-white/5 leading-relaxed font-sans min-h-[50px]">
+            <p className="text-[11px] text-slate-600 bg-rosegold-50/25 p-3 rounded-lg border border-rosegold-100 leading-relaxed font-sans font-medium min-h-[50px]">
               {currentInstanceB?.description || 'Virtual machine instance configuration details.'}
             </p>
           </div>
@@ -317,7 +317,7 @@ export default function CompareProviders() {
         {/* Validation Check Warning */}
         {providerA === providerB && (
           <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-lg text-center">
-            <span className="text-xs text-amber-500 font-medium">
+            <span className="text-xs text-amber-600 font-bold">
               💡 Tip: Select different providers for A and B to evaluate real multi-vendor cost differentials!
             </span>
           </div>
@@ -327,13 +327,13 @@ export default function CompareProviders() {
       {/* Dynamic Shared Siders (Cost parameters) & Cost Output */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sliders Input Panel */}
-        <div className="lg:col-span-1 bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-1 bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
-              <span className="p-1 rounded bg-blue-900/40 text-blue-400 border border-blue-800">
+            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-rosegold-100">
+              <span className="p-1 rounded bg-rosegold-50 text-rosegold-600 border border-rosegold-200">
                 <Sliders className="w-4 h-4" />
               </span>
-              <h4 className="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
                 Shared Sizing Parameters
               </h4>
             </div>
@@ -342,8 +342,8 @@ export default function CompareProviders() {
               {/* Slider 1: Instance Count */}
               <div>
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
-                  <span className="text-gray-500 uppercase tracking-wider text-[10px]">VM Instance Count</span>
-                  <span className="text-white font-bold">{instanceCount} VM(s)</span>
+                  <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold">VM Instance Count</span>
+                  <span className="text-slate-800 font-bold">{instanceCount} VM(s)</span>
                 </div>
                 <input
                   type="range"
@@ -351,15 +351,15 @@ export default function CompareProviders() {
                   max="5"
                   value={instanceCount}
                   onChange={(e) => setInstanceCount(parseInt(e.target.value))}
-                  className="w-full accent-blue-500 cursor-pointer h-1.5 bg-black/40 rounded-lg appearance-none mt-1"
+                  className="w-full accent-rose-400 cursor-pointer h-1.5 bg-rosegold-100 rounded-lg appearance-none mt-1"
                 />
               </div>
 
               {/* Slider 2: Storage Size */}
               <div>
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
-                  <span className="text-gray-500 uppercase tracking-wider text-[10px]">SSD Disk Volume</span>
-                  <span className="text-white font-bold">{diskStorageGb} GB / VM</span>
+                  <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold">SSD Disk Volume</span>
+                  <span className="text-slate-800 font-bold">{diskStorageGb} GB / VM</span>
                 </div>
                 <input
                   type="range"
@@ -368,15 +368,15 @@ export default function CompareProviders() {
                   step="10"
                   value={diskStorageGb}
                   onChange={(e) => setDiskStorageGb(parseInt(e.target.value))}
-                  className="w-full accent-blue-500 cursor-pointer h-1.5 bg-black/40 rounded-lg appearance-none mt-1"
+                  className="w-full accent-rose-400 cursor-pointer h-1.5 bg-rosegold-100 rounded-lg appearance-none mt-1"
                 />
               </div>
 
               {/* Slider 3: Network Data Egress */}
               <div>
                 <div className="flex justify-between items-center text-xs font-mono mb-1.5">
-                  <span className="text-gray-500 uppercase tracking-wider text-[10px]">Net Outbound Egress</span>
-                  <span className="text-white font-bold">{dataTransferGb} GB / month</span>
+                  <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold">Net Outbound Egress</span>
+                  <span className="text-slate-800 font-bold">{dataTransferGb} GB / month</span>
                 </div>
                 <input
                   type="range"
@@ -385,14 +385,14 @@ export default function CompareProviders() {
                   step="5"
                   value={dataTransferGb}
                   onChange={(e) => setDataTransferGb(parseInt(e.target.value))}
-                  className="w-full accent-blue-500 cursor-pointer h-1.5 bg-black/40 rounded-lg appearance-none mt-1"
+                  className="w-full accent-rose-400 cursor-pointer h-1.5 bg-rosegold-100 rounded-lg appearance-none mt-1"
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/5 text-[10px] text-gray-500 leading-relaxed font-sans">
-            <HelpCircle className="w-3.5 h-3.5 inline mr-1 text-blue-400/80 align-text-bottom" />
+          <div className="mt-6 pt-4 border-t border-rosegold-100 text-[10px] text-slate-500 leading-relaxed font-sans font-medium">
+            <HelpCircle className="w-3.5 h-3.5 inline mr-1 text-rosegold-500 align-text-bottom" />
             Varying sliders scales both systems proportionally using corresponding provider billing parameters.
           </div>
         </div>
@@ -400,102 +400,102 @@ export default function CompareProviders() {
         {/* Side-by-Side Cost Comparison Displays */}
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Provider A Cost breakdown */}
-          <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+          <div className="bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4">
-                <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider">{dataA.providerName}</span>
-                <span className="text-[10px] text-blue-400 font-mono font-bold uppercase">Side A</span>
+              <div className="flex justify-between items-center pb-3 border-b border-rosegold-100 mb-4">
+                <span className="text-xs font-mono font-bold text-slate-800 uppercase tracking-wider">{dataA.providerName}</span>
+                <span className="text-[10px] text-rosegold-600 font-mono font-bold uppercase">Side A</span>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Compute Host Class Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">Compute Host Class Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${computeCostA.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> ({currentInstanceA?.type})</span>
+                    <span className="text-slate-500 text-xs font-normal"> ({currentInstanceA?.type})</span>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">SSD Storage Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">SSD Storage Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${storageCostA.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> (${dataA.storageCostGb.toFixed(2)}/GB)</span>
+                    <span className="text-slate-500 text-xs font-normal"> (${dataA.storageCostGb.toFixed(2)}/GB)</span>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Data Outbound Network Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">Data Outbound Network Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${networkCostA.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> (${dataA.dataTransferCostGb.toFixed(2)}/GB)</span>
+                    <span className="text-slate-500 text-xs font-normal"> (${dataA.dataTransferCostGb.toFixed(2)}/GB)</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-white/5">
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono block">Aggregate Monthly Estimate</span>
+            <div className="mt-6 pt-4 border-t border-rosegold-100">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono block font-bold">Aggregate Monthly Estimate</span>
               <div className="flex items-baseline gap-1 mt-1">
-                <DollarSign className="w-5 h-5 text-gray-400" />
-                <span className={`text-3xl font-extrabold tracking-tight ${getCheaperClass(totalCostA, totalCostB, 'A')}`}>
+                <DollarSign className="w-5 h-5 text-slate-400" />
+                <span className={`text-3xl font-black tracking-tight ${getCheaperClass(totalCostA, totalCostB, 'A')}`}>
                   {totalCostA.toFixed(2)}
                 </span>
-                <span className="text-gray-500 text-xs font-mono">/mo</span>
+                <span className="text-slate-500 text-xs font-mono font-bold">/mo</span>
                 {getCheaperBadge(totalCostA, totalCostB, 'A')}
               </div>
-              <div className="text-[10px] text-gray-500 font-mono mt-1 uppercase tracking-wider">
+              <div className="text-[10px] text-slate-500 font-mono mt-1 uppercase tracking-wider font-semibold">
                 Annual estimate: ${(totalCostA * 12).toFixed(2)}
               </div>
             </div>
           </div>
 
           {/* Provider B Cost breakdown */}
-          <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+          <div className="bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-center pb-3 border-b border-white/5 mb-4">
-                <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider">{dataB.providerName}</span>
-                <span className="text-[10px] text-emerald-400 font-mono font-bold uppercase">Side B</span>
+              <div className="flex justify-between items-center pb-3 border-b border-rosegold-100 mb-4">
+                <span className="text-xs font-mono font-bold text-slate-800 uppercase tracking-wider">{dataB.providerName}</span>
+                <span className="text-[10px] text-rosegold-600 font-mono font-bold uppercase">Side B</span>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Compute Host Class Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">Compute Host Class Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${computeCostB.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> ({currentInstanceB?.type})</span>
+                    <span className="text-slate-500 text-xs font-normal"> ({currentInstanceB?.type})</span>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">SSD Storage Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">SSD Storage Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${storageCostB.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> (${dataB.storageCostGb.toFixed(2)}/GB)</span>
+                    <span className="text-slate-500 text-xs font-normal"> (${dataB.storageCostGb.toFixed(2)}/GB)</span>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Data Outbound Network Monthly</span>
-                  <div className="text-lg font-bold text-white font-mono mt-0.5">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono font-bold">Data Outbound Network Monthly</span>
+                  <div className="text-lg font-bold text-slate-800 font-mono mt-0.5">
                     ${networkCostB.toFixed(2)}
-                    <span className="text-gray-500 text-xs font-normal"> (${dataB.dataTransferCostGb.toFixed(2)}/GB)</span>
+                    <span className="text-slate-500 text-xs font-normal"> (${dataB.dataTransferCostGb.toFixed(2)}/GB)</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-white/5">
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono block">Aggregate Monthly Estimate</span>
+            <div className="mt-6 pt-4 border-t border-rosegold-100">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono block font-bold">Aggregate Monthly Estimate</span>
               <div className="flex items-baseline gap-1 mt-1">
-                <DollarSign className="w-5 h-5 text-gray-400" />
-                <span className={`text-3xl font-extrabold tracking-tight ${getCheaperClass(totalCostA, totalCostB, 'B')}`}>
+                <DollarSign className="w-5 h-5 text-slate-400" />
+                <span className={`text-3xl font-black tracking-tight ${getCheaperClass(totalCostA, totalCostB, 'B')}`}>
                   {totalCostB.toFixed(2)}
                 </span>
-                <span className="text-gray-500 text-xs font-mono">/mo</span>
+                <span className="text-slate-500 text-xs font-mono font-bold">/mo</span>
                 {getCheaperBadge(totalCostA, totalCostB, 'B')}
               </div>
-              <div className="text-[10px] text-gray-500 font-mono mt-1 uppercase tracking-wider">
+              <div className="text-[10px] text-slate-500 font-mono mt-1 uppercase tracking-wider font-semibold">
                 Annual estimate: ${(totalCostB * 12).toFixed(2)}
               </div>
             </div>
@@ -505,91 +505,91 @@ export default function CompareProviders() {
 
       {/* Cost Delta Analysis callout */}
       {totalCostA !== totalCostB && (
-        <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-4 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-white border border-rosegold-200/60 rounded-xl p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Coins className="w-5 h-5 text-green-400 shrink-0" />
-            <div className="text-xs leading-relaxed font-sans text-gray-300">
-              Platform <strong className="text-white">{totalCostA < totalCostB ? dataA.providerName : dataB.providerName}</strong> is currently estimated to be{' '}
-              <strong className="text-green-400">${Math.abs(totalCostA - totalCostB).toFixed(2)}/month</strong> cheaper for this specific usage criteria.
-              <span className="block text-[11px] text-gray-500 mt-0.5">This represents a total annualized multi-cloud delta of <strong>${(Math.abs(totalCostA - totalCostB) * 12).toFixed(2)}/year</strong>.</span>
+            <Coins className="w-5 h-5 text-emerald-600 shrink-0" />
+            <div className="text-xs leading-relaxed font-sans text-slate-700 font-medium">
+              Platform <strong className="text-slate-900">{totalCostA < totalCostB ? dataA.providerName : dataB.providerName}</strong> is currently estimated to be{' '}
+              <strong className="text-emerald-600 font-bold">${Math.abs(totalCostA - totalCostB).toFixed(2)}/month</strong> cheaper for this specific usage criteria.
+              <span className="block text-[11px] text-slate-500 mt-0.5 font-medium">This represents a total annualized multi-cloud delta of <strong>${(Math.abs(totalCostA - totalCostB) * 12).toFixed(2)}/year</strong>.</span>
             </div>
           </div>
-          <div className="text-xs font-mono font-bold bg-green-500/10 border border-green-400/20 text-green-400 px-3 py-1.5 rounded uppercase tracking-wider">
+          <div className="text-xs font-mono font-bold bg-emerald-500/5 border border-emerald-500/10 text-emerald-700 px-3 py-1.5 rounded uppercase tracking-wider">
             Savings potential: {((Math.abs(totalCostA - totalCostB) / Math.max(totalCostA, totalCostB)) * 100).toFixed(0)}%
           </div>
         </div>
       )}
 
       {/* Side-by-Side Infrastructure Specification Grid */}
-      <div className="bg-[#0D0F14] border border-white/10 rounded-xl p-5 shadow-xl">
-        <div className="flex items-center gap-2 mb-6 pb-3 border-b border-white/5">
-          <span className="p-1 rounded bg-blue-900/40 text-blue-400 border border-blue-800">
+      <div className="bg-white border border-rosegold-200/60 rounded-xl p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-6 pb-3 border-b border-rosegold-100">
+          <span className="p-1 rounded bg-rosegold-50 text-rosegold-600 border border-rosegold-200">
             <Layers className="w-4 h-4" />
           </span>
-          <h4 className="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+          <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
             Infrastructure Requirements Specification Matrix
           </h4>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/5 -ml-px"></div>
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-rosegold-100 -ml-px"></div>
 
           {/* Left Column A Specs */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 pb-1.5 border-b border-white/5">
-              <div className="w-1.5 h-3 bg-blue-500 rounded-sm"></div>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">{dataA.providerName} Specification</span>
+            <div className="flex items-center gap-2 pb-1.5 border-b border-rosegold-100">
+              <div className="w-1.5 h-3 bg-rosegold-500 rounded-sm"></div>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">{dataA.providerName} Specification</span>
             </div>
 
             <div className="space-y-4 text-xs">
               {/* Virtual Server */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Virtual Compute</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Cpu className="w-3.5 h-3.5 inline mr-1 text-blue-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Virtual Compute</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Cpu className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specA.computeService}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-0.5">Instance: {currentInstanceA?.type} ({currentInstanceA?.vcpu} vCPU, {currentInstanceA?.ram} RAM)</span>
+                  <span className="block text-[11px] text-slate-500 mt-0.5 font-medium">Instance: {currentInstanceA?.type} ({currentInstanceA?.vcpu} vCPU, {currentInstanceA?.ram} RAM)</span>
                 </span>
               </div>
 
               {/* Volume Storage */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Volume Disk Storage</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <HardDrive className="w-3.5 h-3.5 inline mr-1 text-blue-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Volume Disk Storage</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <HardDrive className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specA.storageService}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-0.5">Type: Solid State Disk with GP3 IOPS optimization</span>
+                  <span className="block text-[11px] text-slate-500 mt-0.5 font-medium">Type: Solid State Disk with GP3 IOPS optimization</span>
                 </span>
               </div>
 
               {/* Virtual Network */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">VPC Network Topology</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Globe className="w-3.5 h-3.5 inline mr-1 text-blue-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">VPC Network Topology</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Globe className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specA.vpcName}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specA.netDetails}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specA.netDetails}</span>
                 </span>
               </div>
 
               {/* Network Protection */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Firewall Policies</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Lock className="w-3.5 h-3.5 inline mr-1 text-blue-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Firewall Policies</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Lock className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specA.securityName}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specA.secDetails}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specA.secDetails}</span>
                 </span>
               </div>
 
               {/* Identity access */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Identity & OIDC Auth</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <UserCheck className="w-3.5 h-3.5 inline mr-1 text-blue-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Identity & OIDC Auth</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <UserCheck className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specA.iamName}</strong>
-                  <span className="block text-[10px] text-gray-500 font-semibold mt-1 uppercase font-mono">{specA.oidcName}</span>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specA.iamDetails}</span>
+                  <span className="block text-[10px] text-rosegold-700 font-bold mt-1 uppercase font-mono">{specA.oidcName}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specA.iamDetails}</span>
                 </span>
               </div>
             </div>
@@ -597,60 +597,60 @@ export default function CompareProviders() {
 
           {/* Right Column B Specs */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 pb-1.5 border-b border-white/5">
-              <div className="w-1.5 h-3 bg-emerald-500 rounded-sm"></div>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">{dataB.providerName} Specification</span>
+            <div className="flex items-center gap-2 pb-1.5 border-b border-rosegold-100">
+              <div className="w-1.5 h-3 bg-rosegold-500 rounded-sm"></div>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">{dataB.providerName} Specification</span>
             </div>
 
             <div className="space-y-4 text-xs">
               {/* Virtual Server */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Virtual Compute</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Cpu className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Virtual Compute</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Cpu className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specB.computeService}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-0.5">Instance: {currentInstanceB?.type} ({currentInstanceB?.vcpu} vCPU, {currentInstanceB?.ram} RAM)</span>
+                  <span className="block text-[11px] text-slate-500 mt-0.5 font-medium">Instance: {currentInstanceB?.type} ({currentInstanceB?.vcpu} vCPU, {currentInstanceB?.ram} RAM)</span>
                 </span>
               </div>
 
               {/* Volume Storage */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Volume Disk Storage</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <HardDrive className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Volume Disk Storage</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <HardDrive className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specB.storageService}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-0.5">Type: Solid State Disk with GP3 IOPS optimization</span>
+                  <span className="block text-[11px] text-slate-500 mt-0.5 font-medium">Type: Solid State Disk with GP3 IOPS optimization</span>
                 </span>
               </div>
 
               {/* Virtual Network */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">VPC Network Topology</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Globe className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">VPC Network Topology</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Globe className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specB.vpcName}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specB.netDetails}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specB.netDetails}</span>
                 </span>
               </div>
 
               {/* Network Protection */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Firewall Policies</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <Lock className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Firewall Policies</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <Lock className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specB.securityName}</strong>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specB.secDetails}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specB.secDetails}</span>
                 </span>
               </div>
 
               {/* Identity access */}
               <div className="grid grid-cols-3 gap-2">
-                <span className="text-gray-500 font-mono uppercase text-[9px] font-bold">Identity & OIDC Auth</span>
-                <span className="col-span-2 text-gray-300 font-sans leading-relaxed">
-                  <UserCheck className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
+                <span className="text-slate-400 font-mono uppercase text-[9px] font-bold">Identity & OIDC Auth</span>
+                <span className="col-span-2 text-slate-700 font-sans leading-relaxed font-semibold">
+                  <UserCheck className="w-3.5 h-3.5 inline mr-1 text-rosegold-600" />
                   <strong>{specB.iamName}</strong>
-                  <span className="block text-[10px] text-gray-500 font-semibold mt-1 uppercase font-mono">{specB.oidcName}</span>
-                  <span className="block text-[11px] text-gray-500 mt-1">{specB.iamDetails}</span>
+                  <span className="block text-[10px] text-rosegold-700 font-bold mt-1 uppercase font-mono">{specB.oidcName}</span>
+                  <span className="block text-[11px] text-slate-500 mt-1 font-medium">{specB.iamDetails}</span>
                 </span>
               </div>
             </div>
@@ -659,17 +659,17 @@ export default function CompareProviders() {
       </div>
 
       {/* Side-by-Side Terraform IaC Comparative Explorer */}
-      <div className="bg-[#0D0F14] border border-white/10 rounded-xl overflow-hidden shadow-xl">
-        <div className="flex border-b border-white/5 bg-black/40 px-4 pt-3 gap-2 justify-between items-center">
+      <div className="bg-white border border-rosegold-200/60 rounded-xl overflow-hidden shadow-sm">
+        <div className="flex border-b border-rosegold-100 bg-rosegold-50/40 px-4 pt-3 gap-2 justify-between items-center">
           <div className="flex gap-2">
             {(['main', 'variables', 'iam', 'outputs'] as const).map((sec) => (
               <button
                 key={sec}
                 onClick={() => setActiveCodeSection(sec)}
-                className={`px-4 py-2 text-xs font-semibold rounded-t-lg transition-all duration-150 border-t border-x ${
+                className={`px-4 py-2 text-xs font-bold rounded-t-lg transition-all duration-150 border-t border-x ${
                   activeCodeSection === sec
-                    ? 'bg-[#0D0F14] border-white/10 text-white font-bold'
-                    : 'bg-transparent border-transparent text-gray-400 hover:text-white'
+                    ? 'bg-[#18181C] border-rosegold-200/60 text-white font-bold'
+                    : 'bg-transparent border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
                 {sec === 'main' && 'main.tf (Primary)'}
@@ -679,27 +679,27 @@ export default function CompareProviders() {
               </button>
             ))}
           </div>
-          <span className="text-[10px] text-gray-500 font-mono uppercase tracking-wider pr-4 hidden sm:inline">
+          <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider font-bold pr-4 hidden sm:inline">
             Terraform IaC Side-by-Side Compare
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] divide-y md:divide-y-0 md:divide-x divide-white/5">
           {/* Code block for side A */}
-          <div className="flex flex-col bg-[#0D0F14]">
+          <div className="flex flex-col bg-[#18181C]">
             <div className="flex justify-between items-center px-4 py-2 bg-black/20 border-b border-white/5">
               <div className="flex items-center gap-1.5">
-                <FileCode className="w-3.5 h-3.5 text-blue-400" />
+                <FileCode className="w-3.5 h-3.5 text-rose-300" />
                 <span className="text-[11px] font-mono text-gray-300 font-bold">{getCodeFileName(providerA, activeCodeSection)} ({providerA.toUpperCase()})</span>
               </div>
               <button
                 onClick={() => handleCopy('A', codeA)}
-                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-white bg-white/5 px-2.5 py-1 rounded border border-white/10 transition active:scale-95 cursor-pointer"
+                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-white bg-white/5 px-2.5 py-1 rounded border border-white/10 transition active:scale-95 cursor-pointer font-bold"
               >
                 {copiedA ? (
                   <>
-                    <Check className="w-3 h-3 text-green-400" />
-                    <span className="text-green-400">Copied!</span>
+                    <Check className="w-3 h-3 text-rose-300" />
+                    <span className="text-rose-300">Copied!</span>
                   </>
                 ) : (
                   <>
@@ -709,7 +709,7 @@ export default function CompareProviders() {
                 )}
               </button>
             </div>
-            <div className="flex-1 overflow-auto max-h-[400px] p-4 font-mono text-xs text-gray-300 leading-relaxed bg-black/40">
+            <div className="flex-1 overflow-auto max-h-[400px] p-4 font-mono text-xs text-gray-300 leading-relaxed bg-[#18181C]">
               <pre className="whitespace-pre">
                 <code>{codeA}</code>
               </pre>
@@ -717,20 +717,20 @@ export default function CompareProviders() {
           </div>
 
           {/* Code block for side B */}
-          <div className="flex flex-col bg-[#0D0F14]">
+          <div className="flex flex-col bg-[#18181C]">
             <div className="flex justify-between items-center px-4 py-2 bg-black/20 border-b border-white/5">
               <div className="flex items-center gap-1.5">
-                <FileCode className="w-3.5 h-3.5 text-emerald-400" />
+                <FileCode className="w-3.5 h-3.5 text-rose-300" />
                 <span className="text-[11px] font-mono text-gray-300 font-bold">{getCodeFileName(providerB, activeCodeSection)} ({providerB.toUpperCase()})</span>
               </div>
               <button
                 onClick={() => handleCopy('B', codeB)}
-                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-white bg-white/5 px-2.5 py-1 rounded border border-white/10 transition active:scale-95 cursor-pointer"
+                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-white bg-white/5 px-2.5 py-1 rounded border border-white/10 transition active:scale-95 cursor-pointer font-bold"
               >
                 {copiedB ? (
                   <>
-                    <Check className="w-3 h-3 text-green-400" />
-                    <span className="text-green-400">Copied!</span>
+                    <Check className="w-3 h-3 text-rose-300" />
+                    <span className="text-rose-300">Copied!</span>
                   </>
                 ) : (
                   <>
@@ -740,7 +740,7 @@ export default function CompareProviders() {
                 )}
               </button>
             </div>
-            <div className="flex-1 overflow-auto max-h-[400px] p-4 font-mono text-xs text-gray-300 leading-relaxed bg-black/40">
+            <div className="flex-1 overflow-auto max-h-[400px] p-4 font-mono text-xs text-gray-300 leading-relaxed bg-[#18181C]">
               <pre className="whitespace-pre">
                 <code>{codeB}</code>
               </pre>
