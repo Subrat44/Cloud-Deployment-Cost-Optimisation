@@ -467,66 +467,69 @@ jobs:
   storageCostGb: 0.10, // balanced pd-balanced per GB/month
   dataTransferCostGb: 0.12, // Internet egress rate
 
-  readmeMarkdown: `# Cloud Infrastructure Assessment Submission (GCP Target)
+  readmeMarkdown: `# Multi-Cloud Architectural Deployment Assessment (GCP Target)
 
-This repository contains the infrastructure configuration files, CI/CD automated deployment workflow, and simple Node.js application required to deploy a basic web application on Google Cloud Platform (GCP).
-
----
-
-## 1. Architectural Decisions & Design Rationale
-
-This setup is built on Google Cloud-native paradigms, focusing on maximum security, minimal runtime costs, and fully automated resource lifecycles.
-
-### Custom VPC Networking Over Default VPC
-* **Decision**: Deployed the infrastructure inside a custom VPC with \`auto_create_subnetworks = false\` and explicitly provisioned a regional subnet \`10.0.1.0/24\` inside \`us-central1\`.
-* **Reasoning**: Standard default VPCs automatically pre-create subnets in every single GCP zone, which dramatically increases the attack surface and clutters IP allocation. By manually creating the network and turning off automatic subnetwork creation, we maintain absolute control over IP addressing, routing tables, and firewall rules.
-
-### Secure Firewall Boundaries (Target-Tag Based)
-* **Decision**: Firewall rules restrict HTTP/S globally (\`0.0.0.0/0\`) and SSH traffic to specified blocks, but *only* for Compute VMs marked with the explicit target network tag \`web-server\`.
-* **Reasoning**: GCP firewalls apply globally across the network. By using target tags, we ensure firewall rules are applied with surgical precision. If a second VM (such as an internal database) is spun up later in the VPC, it is protected from public ingress because it lacks the \`web-server\` tag.
-
-### Service Account Least-Privilege
-* **Decision**: Creating a dedicated IAM service account (\`assessment-vm-sa\`) attached to the Compute Engine VM, with narrow scopes limited only to reading required GCP Secrets or metadata.
-* **Reasoning**: Attaching VM instances to the default Compute Engine service account is a security risk as it holds the broad \`Editor\` role by default, giving the VM access to read, modify, or delete almost any resource in the GCP Project. A custom Service Account isolates the application within a narrow boundary.
+This document outlines the step-by-step design decisions, trade-offs considered, cost awareness, and submission guidelines for our GCP target cloud deployment.
 
 ---
 
-## 2. CI/CD Deployment Pipeline (GitHub Actions)
+## 📂 Repository File Structure
+Below is the directory structure of the project representing our dual-engine architecture (Python full-stack backend with React UI):
 
-Deployments are automated through GitHub Actions workflows triggering on any code merge to \`main\`.
-
-### Workload Identity Federation (WIF) OIDC Authentication
-* **Best Practice**: No long-lived Google service account JSON files or credentials are saved in GitHub Secrets.
-* **Implementation**: We create a Workload Identity Pool inside GCP that trusts the GitHub Actions OpenID Connect identity provider. This federation allows the runner to authenticate dynamically with temporary GCP access tokens.
-* **Process Flow**:
-  1. **Source Integrity**: Tests and linters validate code style.
-  2. **Impersonation**: GitHub runner exchanges JWT for short-lived Google IAM access tokens.
-  3. **File Sync**: Uses secure SCP to sync server files and \`setup.sh\` to \`/var/www/app\` on the VM.
-  4. **Process Lifecycle**: The remote shell runs \`setup.sh\` which ensures Node.js is present, compiles package configuration, updates Nginx reverse proxies, and mounts the runtime app persistently inside **PM2** process controllers.
-  5. **Integrity Probe**: Probes \`http://<static-ip>/health\` to confirm success.
+\`\`\`text
+├── .env.example              # Template for environment configuration
+├── .gitignore                # Git exclusions
+├── providers_data.py         # Python representation of Cloud Providers & VM catalogs
+├── server.py                 # Standard Library Python Server (port 3000)
+├── server.ts                 # Node.js supervisor (bridges to Python server.py)
+├── package.json              # Main workspace dependency definition
+├── package-lock.json         # Pinned packages
+├── tsconfig.json             # TypeScript rules
+├── vite.config.ts            # Vite proxy and asset server configuration
+├── src
+│   ├── App.tsx               # Main UI Dashboard Core
+│   ├── index.css             # Unified Tailwind theme rules
+│   ├── main.tsx              # React mounting root
+│   ├── types.ts              # Global TS model declarations
+│   ├── components            # Reusable UI component modules
+│   │   ├── ArchitectureDiagram.tsx  # Dynamic interactive network topology map
+│   │   ├── CodeExplorer.tsx         # Tabbed Terraform configuration reader
+│   │   ├── CompareProviders.tsx     # Cost slide and comparative tables
+│   │   ├── CostAndTradeoffs.tsx     # Granular cost slider inputs & API calculator
+│   │   ├── PipelineSimulator.tsx    # Live simulation workflow runner
+│   │   ├── ProviderSelector.tsx     # Active Cloud selector
+│   │   └── ReadmeViewer.tsx         # Displays formatted target guidelines
+│   └── data                  # Provider data & IaC manifests
+│       ├── awsData.ts               # AWS parameters and custom markdown content
+│       ├── azureData.ts             # Azure parameters and custom markdown content
+│       └── gcpData.ts               # GCP parameters and custom markdown content
+\`\`\`
 
 ---
 
-## 3. Cost Awareness & Architectural Trade-offs
+## 🛠️ Step-by-Step Breakdown
 
-### Compute Instance & Storage Selection
-* **Selected Compute**: \`e2-micro\` (2 vCPU, 1 GB RAM). This instance class falls under GCP's **Always Free tier** for a single VM (when hosted in \`us-central1\`, \`us-east1\`, or \`us-west1\`), making this deployment completely cost-free for initial development and evaluation!
-* **Boot Disk**: 10 GB of **Balanced Persistent Disk (pd-balanced)**. Balanced disks utilize SSD flash under the hood, yielding superior IOPS at a fraction of the price of extreme SSDs ($0.10/GB instead of $0.17/GB).
+### Step 1: Design Decisions (GCP)
+* **Full-Stack Python Backend Engine**: We migrated the core logic of the assessment server to Python 3.10 (\`server.py\`). The backend processes calculating requests, delivers custom Terraform code blocks, and runs AI-assisted optimizations through Gemini REST endpoints.
+* **Supervising Node.js Process**: To maintain full compatibility with container build systems, we utilize a Node.js process supervisor (\`server.ts\`). It launches, coordinates, and shuts down the underlying Python server cleanly.
+* **Network Isolation (GCP VPC)**: Deployed the instance inside a **custom regional VPC network** with auto-creation of subnets disabled and explicitly provisioned a regional subnet \`10.0.1.0/24\` inside \`us-central1\`.
+* **Stateful Firewall Access Rules**: Access is permitted with target network tags (\`web-server\`). Only HTTP (80) and HTTPS (443) are exposed globally.
+* **Least-Privilege Service Account IAM**: Created a dedicated IAM service account (\`assessment-vm-sa\`) attached to the Compute Engine VM, with narrow scopes limited only to reading required GCP Secrets or metadata.
 
-| Cost Component | Monthly Pricing (USD) | Annual Estimation (USD) |
-| :--- | :--- | :--- |
-| **e2-micro Compute** | $7.11 (or $0.00 Free Tier) | $85.32 (or $0.00 Free Tier) |
-| **pd-balanced Boot Disk (10GB)** | $1.00 | $12.00 |
-| **Data Transfer (10GB egress)** | $1.20 | $14.40 |
-| **Total Estimate** | **$9.31** | **$111.72** |
+### Step 2: Trade-offs Considered
+* **Python vs. Node.js backend**: Python was chosen as the primary engine for its ease of integration with cloud automation tools, rich standard library socket engines, and clean integration with AI SDKs. Node.js is retained only as a supervisor to satisfy standard runtime scripts.
+* **VM Sizing (Burstable GCP Compute Engine)**: We chose burstable compute options like \`e2-micro\` because they provide excellent dev/staging performance and fit fully within GCP's Always Free tier programs.
+* **Local Fallback for Optimization**: The system includes a dual-engine AI optimizer. If the \`GEMINI_API_KEY\` is not present, it automatically uses a local rule-based optimizer fallback to guarantee instant, resilient, and offline-compatible UX.
 
-### Trade-offs: Compute Engine VM vs. Cloud Run
-1. **Compute Engine VM**:
-   * *Pros*: Provides standard linux VM filesystem control, allows custom persistent caching and local file storage, standard SSH system troubleshooting, and direct Nginx port configurations.
-   * *Cons*: Requires active patch management, service maintenance (PM2 logs), and does not scale down to 0 automatically.
-2. **Google Cloud Run (Serverless Container)**:
-   * *Pros*: Scale-to-zero capabilities (completely free when there is no traffic), fully managed infrastructure, zero OS maintenance.
-   * *Cons*: Requires wrapping application inside a Docker container, stateless filesystem limits standard local database storage (like SQLite).
-3. *Final Decision*: A standard VM (Compute Engine) with a custom service account is chosen for this submission to prove raw networking, routing firewalls, and system administration proficiency.
+### Step 3: Cost Awareness (GCP)
+* **Compute Budgets**: The standard \`e2-micro\` compute host is priced at approximately $7.11/month per VM, which is fully offset ($0.00) under the GCP Always Free tier.
+* **pd-balanced SSD Disk Storage**: Replaced legacy persistent disks with pd-balanced volumes representing superior IOPS at a fraction of the cost of extreme SSDs.
+* **Network Outbound (Egress)**: Sliders and calculations isolate outbound data transfer to avoid crossing billing thresholds on public internet egress.
+
+### Step 4: Submission Guidelines
+1. **Initialize Git Cleanliness**: Ensure that no credentials, private SSH keys, or cloud certificates are committed to the public tree.
+2. **Setup Local Environment**: Copy \`.env.example\` to \`.env\` and fill in optional parameters such as \`GEMINI_API_KEY\`.
+3. **Compile Verification**: Execute \`npm run lint\` followed by \`npm run build\` to verify type safety and successful static bundling.
+4. **Deploy & Validate**: Ensure the supervised Python server boots correctly, binds to port 3000, and passes all health queries on \`/api/health\`.
 `
 };

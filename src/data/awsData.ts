@@ -559,70 +559,69 @@ jobs:
   storageCostGb: 0.08, // Standard gp3 cost per GB/month
   dataTransferCostGb: 0.09, // Internet Outbound cost per GB
 
-  readmeMarkdown: `# Cloud Infrastructure Assessment Submission (AWS Target)
+  readmeMarkdown: `# Multi-Cloud Architectural Deployment Assessment (AWS Target)
 
-This repository contains the infrastructure configuration, deployment pipelines, and source code required to deploy a basic web application to an Amazon Web Services (AWS) environment.
-
----
-
-## 1. Architectural Decisions & Design Rationale
-
-Rather than taking a generic approach, the infrastructure has been designed around modern DevOps security principles, high maintainability, and resource optimization.
-
-### Network Isolation (VPC over Default VPC)
-* **Decision**: Deployed the instance inside a **custom multi-subnet VPC** with a CIDR of \`10.0.0.0/16\` instead of relying on the AWS Default VPC.
-* **Reasoning**: Default VPCs are shared starting points that are susceptible to configuration sprawl and unintended routing. A custom VPC provides a distinct networking perimeter, allowing us to enforce strict inbound routing rules, segment traffic, and scale with secondary subnets (e.g., database private subnets) as the app expands.
-
-### Stateful Security Group Restrictions
-* **Decision**: Restricting inbound traffic to Port 80 (HTTP) and Port 443 (HTTPS) globally (\`0.0.0.0/0\`), but strictly enforcing SSH Port 22 access to specific administrator CIDR blocks (or completely routing administration through Systems Manager Session Manager).
-* **Reasoning**: Exposing Port 22 globally makes virtual machines immediate targets for automated brute-force scripts. In production, SSH access is either restricted to a Corporate VPN/bastion host CIDR or handled securely via **AWS Systems Manager (SSM) Session Manager**, which requires no inbound SSH port exposure.
-
-### Least-Privilege IAM Boundary
-* **Decision**: Attaching an IAM Instance Profile containing an IAM Role restricting access only to standard SSM management APIs and explicit read-only configuration paths in Systems Manager Parameter Store (\`/app/production/*\`).
-* **Reasoning**: Hardcoding database passwords or API keys inside source files is a high-risk security anti-pattern. By utilizing the EC2 Instance Profile, the application code requests short-lived credentials automatically at runtime to read configuration data, satisfying the security rule of least privilege.
+This document outlines the step-by-step design decisions, trade-offs considered, cost awareness, and submission guidelines for our AWS target cloud deployment.
 
 ---
 
-## 2. CI/CD Deployment Pipeline (GitHub Actions)
+## 📂 Repository File Structure
+Below is the directory structure of the project representing our dual-engine architecture (Python full-stack backend with React UI):
 
-A fully automated CI/CD pipeline triggers on any push to the \`main\` branch.
-
-### Build and Lint Validation
-Before deployment, the code is analyzed using standard JavaScript static analysis and test tools:
-1. **Lint Checks**: Checks code formatting and syntax integrity.
-2. **Test Runs**: Validates route health and unit checks before shipping resources.
-
-### Secure Deployment Mechanics: AWS OpenID Connect (OIDC)
-* **Best Practice**: No long-lived secret tokens (such as AWS Access Keys) are saved inside GitHub Secrets.
-* **Implementation**: We define an OpenID Connect (OIDC) trust relationship in IAM. The GitHub Actions worker requests a short-lived, cryptographically signed JWT token from GitHub, which is exchanged directly with AWS for a temporary IAM deployment session. This completely mitigates credential theft risks from GitHub logs or repository breaches.
-* **Process Flow**:
-  1. **Build & Test** completes.
-  2. **SCP Action** copies application files to the secure directory (\`/var/www/app\`) via SSH Key.
-  3. **SSH Action** runs \`setup.sh\` which bootstraps Node.js, configures Nginx reverse proxy, and runs/updates the app under **PM2** process monitoring.
-  4. **Health Check** executes a final live curl check to confirm active status before finalizing build status.
+\`\`\`text
+├── .env.example              # Template for environment configuration
+├── .gitignore                # Git exclusions
+├── providers_data.py         # Python representation of Cloud Providers & VM catalogs
+├── server.py                 # Standard Library Python Server (port 3000)
+├── server.ts                 # Node.js supervisor (bridges to Python server.py)
+├── package.json              # Main workspace dependency definition
+├── package-lock.json         # Pinned packages
+├── tsconfig.json             # TypeScript rules
+├── vite.config.ts            # Vite proxy and asset server configuration
+├── src
+│   ├── App.tsx               # Main UI Dashboard Core
+│   ├── index.css             # Unified Tailwind theme rules
+│   ├── main.tsx              # React mounting root
+│   ├── types.ts              # Global TS model declarations
+│   ├── components            # Reusable UI component modules
+│   │   ├── ArchitectureDiagram.tsx  # Dynamic interactive network topology map
+│   │   ├── CodeExplorer.tsx         # Tabbed Terraform configuration reader
+│   │   ├── CompareProviders.tsx     # Cost slide and comparative tables
+│   │   ├── CostAndTradeoffs.tsx     # Granular cost slider inputs & API calculator
+│   │   ├── PipelineSimulator.tsx    # Live simulation workflow runner
+│   │   ├── ProviderSelector.tsx     # Active Cloud selector
+│   │   └── ReadmeViewer.tsx         # Displays formatted target guidelines
+│   └── data                  # Provider data & IaC manifests
+│       ├── awsData.ts               # AWS parameters and custom markdown content
+│       ├── azureData.ts             # Azure parameters and custom markdown content
+│       └── gcpData.ts               # GCP parameters and custom markdown content
+\`\`\`
 
 ---
 
-## 3. Cost Awareness & Architectural Trade-offs
+## 🛠️ Step-by-Step Breakdown
 
-### Instance Sizing and EBS Configuration
-* **Selected Instance**: \`t3.micro\` (2 vCPU, 1 GB RAM) - standard, highly cost-effective, and fully covered under the AWS Free Tier.
-* **Storage Standard**: \`gp3\` volumes of 10 GB size configured with 3000 IOPS. \`gp3\` is chosen over older \`gp2\` as it provides a **20% lower storage cost** ($0.08 vs $0.10 per GB) and permits independent provisioning of throughput and IOPS.
+### Step 1: Design Decisions (AWS)
+* **Full-Stack Python Backend Engine**: We migrated the core logic of the assessment server to Python 3.10 (\`server.py\`). The backend processes calculating requests, delivers custom Terraform code blocks, and runs AI-assisted optimizations through Gemini REST endpoints.
+* **Supervising Node.js Process**: To maintain full compatibility with container build systems, we utilize a Node.js process supervisor (\`server.ts\`). It launches, coordinates, and shuts down the underlying Python server cleanly.
+* **Network Isolation (AWS VPC)**: Deployed the instance inside a **custom multi-subnet VPC** with a CIDR of \`10.0.0.0/16\` instead of relying on the AWS Default VPC. Standard web traffic remains isolated within a designated \`10.0.1.0/24\` subnet block.
+* **Stateful Security Group Restrictions**: Restricted inbound traffic to Port 80 (HTTP) and Port 443 (HTTPS) globally (\`0.0.0.0/0\`), but strictly enforce SSH Port 22 access to specific administrator CIDR blocks.
+* **Least-Privilege AWS IAM Boundary**: Attaching an IAM Instance Profile containing an IAM Role restricting access only to standard SSM management APIs and explicit read-only configuration paths.
 
-| Cost Component | Monthly Pricing (USD) | Annual Estimation (USD) |
-| :--- | :--- | :--- |
-| **t3.micro Compute** | $7.60 (or $0.00 Free Tier) | $91.20 (or $0.00 Free Tier) |
-| **EBS Storage (10GB gp3)** | $0.80 | $9.60 |
-| **Data Transfer (10GB)** | $0.90 | $10.80 |
-| **Total Estimate** | **$9.30** | **$111.60** |
+### Step 2: Trade-offs Considered
+* **Python vs. Node.js backend**: Python was chosen as the primary engine for its ease of integration with cloud automation tools, rich standard library socket engines, and clean integration with AI SDKs. Node.js is retained only as a supervisor to satisfy standard runtime scripts.
+* **VM Sizing (Burstable AWS EC2)**: We chose burstable compute options like \`t3.micro\` because they provide excellent dev/staging performance and fit fully within AWS Free Tier programs.
+* **Local Fallback for Optimization**: The system includes a dual-engine AI optimizer. If the \`GEMINI_API_KEY\` is not present, it automatically uses a local rule-based optimizer fallback to guarantee instant, resilient, and offline-compatible UX.
 
-### Trade-offs: Virtual Machine vs. Serverless Container
-1. **VM Deployment (EC2)**:
-   * *Pros*: Full OS level access, high customization, simple execution model, direct control over process management (PM2) and proxy layers (Nginx).
-   * *Cons*: Requires maintenance overhead (patching OS, manual configuration, managing scaling triggers), and incurs constant cost regardless of utilization.
-2. **Serverless (AWS ECS Fargate / App Runner)**:
-   * *Pros*: Zero OS patching overhead, automatic scaling from zero to active, pay-per-second, simpler configuration.
-   * *Cons*: Requires containerization (Dockerizing app), and costs can scale non-linearly under heavy constant loads.
-3. *Final Decision*: For this assessment, a lightweight VM model with PM2 is preferred to demonstrate full-systems administration and core systems architectural knowledge (VPC, custom routing, shell-level boot scripts, Nginx configuration).
+### Step 3: Cost Awareness (AWS)
+* **Compute Budgets**: The standard \`t3.micro\` compute host is priced at approximately $7.60/month per VM, which is fully offset ($0.00) under the AWS Free Tier.
+* **gp3 SSD Disk Storage**: Replaced legacy gp2 with gp3 volumes representing **20% cost savings** ($0.08 vs $0.10 per GB) and permitting independent provisioning of throughput and IOPS.
+* **Network Outbound (Egress)**: Sliders and calculations isolate outbound data transfer to avoid crossing billing thresholds on public internet boundaries.
+
+### Step 4: Submission Guidelines
+1. **Initialize Git Cleanliness**: Ensure that no credentials, private SSH keys, or cloud certificates are committed to the public tree.
+2. **Setup Local Environment**: Copy \`.env.example\` to \`.env\` and fill in optional parameters such as \`GEMINI_API_KEY\`.
+3. **Compile Verification**: Execute \`npm run lint\` followed by \`npm run build\` to verify type safety and successful static bundling.
+4. **Deploy & Validate**: Ensure the supervised Python server boots correctly, binds to port 3000, and passes all health queries on \`/api/health\`.
 `
 };

@@ -484,66 +484,69 @@ jobs:
   storageCostGb: 0.08, // Standard SSD storage cost per GB
   dataTransferCostGb: 0.08, // Internet outbound egress cost per GB (after free tier)
 
-  readmeMarkdown: `# Cloud Infrastructure Assessment Submission (Azure Target)
+  readmeMarkdown: `# Multi-Cloud Architectural Deployment Assessment (Azure Target)
 
-This repository contains the infrastructure configuration, deployment automation workflows, and simple application scripts required to deploy a basic web application onto Microsoft Azure.
-
----
-
-## 1. Architectural Decisions & Design Rationale
-
-This setup is built on Azure-native patterns, focusing on maximum resource isolation, high security, and minimal monthly costs.
-
-### Logical Isolation via Resource Group (RG)
-* **Decision**: Grouping all provisioned resources under a specific dedicated Resource Group (\`assessment-resources-rg\`).
-* **Reasoning**: Azure Resource Groups represent logical boundaries. Placing all components (VNet, NIC, Public IP, NSG, VM) within one group permits atomic management, simple audit logs, and clean bulk deletions during teardown, preventing "ghost" resources from leaking billing fees.
-
-### Custom Virtual Network & Subnet Security
-* **Decision**: Deployed inside a custom Virtual Network (VNet) with a CIDR of \`10.0.0.0/16\` and associated the subnet explicitly with a regional Network Security Group (NSG) restricting inbound traffic.
-* **Reasoning**: A custom VNet provides full control over DNS routing and network access. Associating the Network Security Group (NSG) at the NIC/subnet level guarantees stateful firewall traffic checks are performed before packets reach the VM kernel. 
-
-### User-Assigned Managed Identity (IAM Boundary)
-* **Decision**: Attaching an explicit User-Assigned Managed Identity (\`assessment-vm-identity\`) to the Virtual Machine rather than broad admin roles.
-* **Reasoning**: In cloud computing, VMs should never store static database passwords or subscription secrets in plaintext configuration files. Attaching a Managed Identity (which is backed by an Azure AD service principal) permits the VM to securely fetch secrets from **Azure Key Vault** using temporary local OAuth tokens, satisfying the security principle of least privilege.
+This document outlines the step-by-step design decisions, trade-offs considered, cost awareness, and submission guidelines for our Azure target cloud deployment.
 
 ---
 
-## 2. CI/CD Deployment Pipeline (GitHub Actions)
+## 📂 Repository File Structure
+Below is the directory structure of the project representing our dual-engine architecture (Python full-stack backend with React UI):
 
-Our automated CI/CD pipeline triggers immediately on push events to the \`main\` branch.
-
-### Integrated Security: Azure Federated Identity (OIDC)
-* **Best Practice**: No broad Service Principal credentials files or subscription passwords are saved in GitHub Secrets.
-* **Implementation**: We establish an Azure Active Directory Federated Identity Credential that trusts GitHub's secure token issuer. The GitHub Actions worker utilizes OIDC to log in, establishing short-lived, subscription-scoped sessions without any shared passwords.
-* **Process Flow**:
-  1. **Source Validation**: Evaluates syntax correctness and structural tests.
-  2. **Federated Login**: Standard runner negotiates dynamic access directly with Azure AD.
-  3. **File Transport**: SCP moves code, \`package.json\`, and the bootstrap script to the target folder (\`/var/www/app\`).
-  4. **System Bootstrap**: Run-commands execute the \`setup.sh\` script, which upgrades Ubuntu dependencies, mounts the app, configures public Nginx listeners, and boots the process in a persistent **PM2** context.
-  5. **Probe Check**: Verifies active server responses via standard health curls.
+\`\`\`text
+├── .env.example              # Template for environment configuration
+├── .gitignore                # Git exclusions
+├── providers_data.py         # Python representation of Cloud Providers & VM catalogs
+├── server.py                 # Standard Library Python Server (port 3000)
+├── server.ts                 # Node.js supervisor (bridges to Python server.py)
+├── package.json              # Main workspace dependency definition
+├── package-lock.json         # Pinned packages
+├── tsconfig.json             # TypeScript rules
+├── vite.config.ts            # Vite proxy and asset server configuration
+├── src
+│   ├── App.tsx               # Main UI Dashboard Core
+│   ├── index.css             # Unified Tailwind theme rules
+│   ├── main.tsx              # React mounting root
+│   ├── types.ts              # Global TS model declarations
+│   ├── components            # Reusable UI component modules
+│   │   ├── ArchitectureDiagram.tsx  # Dynamic interactive network topology map
+│   │   ├── CodeExplorer.tsx         # Tabbed Terraform configuration reader
+│   │   ├── CompareProviders.tsx     # Cost slide and comparative tables
+│   │   ├── CostAndTradeoffs.tsx     # Granular cost slider inputs & API calculator
+│   │   ├── PipelineSimulator.tsx    # Live simulation workflow runner
+│   │   ├── ProviderSelector.tsx     # Active Cloud selector
+│   │   └── ReadmeViewer.tsx         # Displays formatted target guidelines
+│   └── data                  # Provider data & IaC manifests
+│       ├── awsData.ts               # AWS parameters and custom markdown content
+│       ├── azureData.ts             # Azure parameters and custom markdown content
+│       └── gcpData.ts               # GCP parameters and custom markdown content
+\`\`\`
 
 ---
 
-## 3. Cost Awareness & Architectural Trade-offs
+## 🛠️ Step-by-Step Breakdown
 
-### Compute VM & Storage Sizing
-* **Selected Size**: \`Standard_B1s\` (1 vCPU, 1 GB RAM). This size is highly affordable and falls directly under Azure's **12-month Free services list**, allowing testing without billing charges.
-* **OS Disk Storage**: 30 GB **Standard SSD (StandardSSD_LRS)** locally redundant storage. Standard SSDs offer a sweet spot of consistent low-latency IOPS ($0.08/GB) at a lower cost than Premium SSDs ($0.15/GB).
+### Step 1: Design Decisions (Azure)
+* **Full-Stack Python Backend Engine**: We migrated the core logic of the assessment server to Python 3.10 (\`server.py\`). The backend processes calculating requests, delivers custom Terraform code blocks, and runs AI-assisted optimizations through Gemini REST endpoints.
+* **Supervising Node.js Process**: To maintain full compatibility with container build systems, we utilize a Node.js process supervisor (\`server.ts\`). It launches, coordinates, and shuts down the underlying Python server cleanly.
+* **Network Isolation (Azure VNet)**: Deployed inside a custom Virtual Network (VNet) with a CIDR of \`10.0.0.0/16\` and associated the subnet explicitly with a regional Network Security Group (NSG) restricting inbound traffic.
+* **Logical Isolation via Resource Group (RG)**: All provisioned resources reside inside a dedicated Resource Group (\`assessment-resources-rg\`) allowing atomic lifecycle management and simple audit logs.
+* **Least-Privilege Managed Identity**: Attached a User-Assigned Managed Identity (\`assessment-vm-identity\`) to the Virtual Machine rather than using broad admin roles or static subscription keys.
 
-| Cost Component | Monthly Pricing (USD) | Annual Estimation (USD) |
-| :--- | :--- | :--- |
-| **Standard_B1s Compute** | $7.59 (or $0.00 Free Tier) | $91.08 (or $0.00 Free Tier) |
-| **Standard SSD (30GB)** | $2.40 | $28.80 |
-| **Data Transfer (10GB egress)** | $0.80 | $9.60 |
-| **Total Estimate** | **$10.79** | **$129.48** |
+### Step 2: Trade-offs Considered
+* **Python vs. Node.js backend**: Python was chosen as the primary engine for its ease of integration with cloud automation tools, rich standard library socket engines, and clean integration with AI SDKs. Node.js is retained only as a supervisor to satisfy standard runtime scripts.
+* **VM Sizing (Burstable Azure Linux VM)**: We chose burstable compute options like \`Standard_B1s\` because they provide excellent dev/staging performance and fit fully within Azure's 12-month Free Tier plan.
+* **Local Fallback for Optimization**: The system includes a dual-engine AI optimizer. If the \`GEMINI_API_KEY\` is not present, it automatically uses a local rule-based optimizer fallback to guarantee instant, resilient, and offline-compatible UX.
 
-### Trade-offs: Virtual Machine vs. Azure App Service
-1. **Azure Virtual Machine**:
-   * *Pros*: Zero architectural lock-in, complete administrative host access, lets us customize filesystem caching, runs standard system processes (Nginx, PM2), and has simple local debugging.
-   * *Cons*: Requires regular Linux operating system security upgrades, and must be configured with manual failovers/scaling rules.
-2. **Azure App Service (PaaS)**:
-   * *Pros*: Fully managed OS patching, automatic TLS certificate renewals, built-in scaling sliders, and direct deployment from Git.
-   * *Cons*: Costs scale higher than B-series VMs under 24/7 continuous loads, and file system boundaries are completely restricted.
-3. *Final Decision*: An Azure VM (\`Standard_B1s\`) is preferred for this assessment to highlight hands-on familiarity with networking architectures (VNets, NIC configurations, security groups), and terminal-level web server setups (Nginx, pm2).
+### Step 3: Cost Awareness (Azure)
+* **Compute Budgets**: The standard \`Standard_B1s\` compute host is priced at approximately $7.59/month per VM, which is fully offset ($0.00) under Azure's 12-month Free tier.
+* **Standard SSD Storage**: Replaced legacy high-cost volume configurations with Standard SSDs (StandardSSD_LRS) representing significant cost savings ($0.08/GB) over Premium SSDs ($0.15/GB).
+* **Network Outbound (Egress)**: Sliders and calculations isolate outbound data transfer to avoid crossing billing thresholds on public internet boundaries.
+
+### Step 4: Submission Guidelines
+1. **Initialize Git Cleanliness**: Ensure that no credentials, private SSH keys, or cloud certificates are committed to the public tree.
+2. **Setup Local Environment**: Copy \`.env.example\` to \`.env\` and fill in optional parameters such as \`GEMINI_API_KEY\`.
+3. **Compile Verification**: Execute \`npm run lint\` followed by \`npm run build\` to verify type safety and successful static bundling.
+4. **Deploy & Validate**: Ensure the supervised Python server boots correctly, binds to port 3000, and passes all health queries on \`/api/health\`.
 `
 };
